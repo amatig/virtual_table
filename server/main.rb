@@ -78,11 +78,11 @@ class Connection < EventMachine::Connection
         @nick = m.args
         # mette in hash e objects la nuova hand
         hand = env.add_hand(self.object_id, Hand.new(@nick))
+        # manda a tutti gli altri la hand
+        resend_without_me(Msg.dump(:type => "Hand", :data => hand))
         # invio dei dati del gioco tavolo, oggetti
         send_me(Msg.dump(:type => "Object", :data => env.table))
         send_me(Msg.dump(:type => "Object", :data => env.objects))
-        # manda a tutti gli altri la hand
-        resend_without_me(Msg.dump(:type => "Hand", :data => hand))
       when "Pick"
         o = env.get_object(m.oid)
         # vede se un oggetto e' disponibile
@@ -99,7 +99,7 @@ class Connection < EventMachine::Connection
                                        :args => [m.args[0], @nick]))
           else
             # se hand si tiene temporaneam. i ref delle carte per spostarle
-            o.lock_over_cards(@nick)
+            o.lock_cards(@nick)
           end
         end
       when "Move"
@@ -110,7 +110,7 @@ class Connection < EventMachine::Connection
           resend_without_me(str) # rinvia agli altri move dell'oggetto
           if o.kind_of?(Hand)
             # sposta tutte le carte con la mano
-            o.cards.each do |c|
+            o.locked_cards.each do |c|
               pos = [c.x + o.x - temp_pos[0], c.y + o.y - temp_pos[1]]
               c.set_pos(*pos)
               resend_all(Msg.dump(:type => "Move", 
@@ -134,9 +134,9 @@ class Connection < EventMachine::Connection
           cards.push(o)
         elsif o.kind_of?(Hand)
           # rimuove le carte in links per lo spostamento
-          o.unlock_over_cards
+          o.unlock_cards
           hands.push(o)
-          cards = env.objects.select { |c| c.kind_of?(Card) }
+          cards = env.cards
         end
         hands.each do |h|
           cards.each do |c|
@@ -151,7 +151,7 @@ class Connection < EventMachine::Connection
         end
       when "GetValue"
         hand = env.get_hand(self.object_id)
-        hand.over_cards.each do |c| 
+        hand.cards_on.each do |c| 
           ret = SecretDeck.instance.get_value(c)
           send_me(Msg.dump(:type => "Action", 
                            :oid => c.oid, 
@@ -170,11 +170,7 @@ class Connection < EventMachine::Connection
           elsif m.args == :action_take
             hand = env.get_hand(self.object_id)
             pos = [hand.x - 85, hand.y + 42]
-            cards = env.objects.select do |c| 
-              c != o and c.kind_of?(Card) and c.fixed_collide?(o)
-            end
-            cards.push(o)
-            cards.each do |c|
+            o.cards_near.each do |c|
               c.send(:action_cover) # azione su un oggetto
               resend_all(Msg.dump(:type => "Action", 
                                   :oid => c.oid, 
@@ -185,10 +181,7 @@ class Connection < EventMachine::Connection
                                   :args => [m.args, pos]))
             end
           elsif m.args == :action_points
-            cards = env.objects.select do |c| 
-              c != o and c.kind_of?(Card) and c.fixed_collide?(o)
-            end
-            cards.push(o)
+            cards = o.cards_near
             cards.each do |c|
               ret = c.send(:action_uncover) # azione su un oggetto
               resend_all(Msg.dump(:type => "Action", 
@@ -214,16 +207,11 @@ class Connection < EventMachine::Connection
               y += 1
             end
           elsif m.args == :action_to_deck
-            cards = [o.oid]
-            env.objects.each do |c| 
-              if (c != o and c.kind_of?(Card) and c.fixed_collide?(o))
-                cards.push(c.oid)
-              end
-            end
-            env.deck.send(m.args, cards) # azione su un oggetto
+            cards_code = o.cards_code_near
+            env.deck.send(m.args, cards_code) # azione su un oggetto
             resend_all(Msg.dump(:type => "Action", 
                                 :oid => env.deck.oid, 
-                                :args => [m.args, cards]))
+                                :args => [m.args, cards_code]))
           else
             o.send(m.args) # azione su un oggetto
             resend_without_me(str)

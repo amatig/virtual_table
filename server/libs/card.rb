@@ -21,6 +21,25 @@ class Card < VObject
     return rc1.collide_rect?(rc2)
   end
   
+  def cards_near
+    cards = Env.instance.objects.select do |o| 
+      o != self and o.kind_of?(Card) and fixed_collide?(o)
+    end
+    cards.push(self)
+    return cards
+  end
+  
+  def cards_code_near
+    cards = []
+    Env.instance.objects.each do |o| 
+      if (o != self and o.kind_of?(Card) and fixed_collide?(o))
+        cards.push(o.oid)
+      end
+    end
+    cards.push(@oid)
+    return cards
+  end
+  
   def to_front
     Env.instance.to_front(self)
   end

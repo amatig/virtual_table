@@ -94,6 +94,10 @@ class Env
     end
   end
   
+  def cards
+    return @objects.select { |c| c.kind_of?(Card) }
+  end
+  
   def order_points(cards)
     temp = {}
     cards.each do |c|
