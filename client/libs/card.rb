@@ -49,7 +49,7 @@ class Card < VObject
     if @lock
       @image_lock.blit(screen, @rect)
       label = @font_lock.render_utf8(@lock, true, [255, 255, 255])
-      label.blit(screen, [@rect.x, @rect.y - 17])
+      label.blit(screen, [@rect.x + 1, @rect.y - 17])
     end
   end
   
