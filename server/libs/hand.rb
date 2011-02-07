@@ -15,12 +15,16 @@ class Hand < VObject
   
   def lock_over_cards(nick)
     unlock_over_cards
-    Env.instance.objects.each do |c| 
-      if (c.kind_of?(Card) and fixed_collide?(c))
-        c.lock(nick)
-        # metto gli oggetti tanto solo in pick esistono
-        @cards.push(c)
-      end
+    over_cards.each do |c|
+      c.lock(nick)
+      # metto gli oggetti tanto solo in pick esistono
+      @cards.push(c)
+    end
+  end
+  
+  def over_cards
+    return Env.instance.objects.select do |c| 
+      c.kind_of?(Card) and fixed_collide?(c)
     end
   end
   

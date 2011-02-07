@@ -151,13 +151,11 @@ class Connection < EventMachine::Connection
         end
       when "GetValue"
         hand = env.get_hand(self.object_id)
-        env.objects.each do |c| 
-          if (c.kind_of?(Card) and hand.fixed_collide?(c))
-            ret = SecretDeck.instance.get_value(c)
-            send_me(Msg.dump(:type => "Action", 
-                             :oid => c.oid, 
-                             :args => [:set_value, ret]))
-          end
+        hand.over_cards.each do |c| 
+          ret = SecretDeck.instance.get_value(c)
+          send_me(Msg.dump(:type => "Action", 
+                           :oid => c.oid, 
+                           :args => [:set_value, ret]))
         end
       when "Action"
         o = env.get_object(m.oid)
