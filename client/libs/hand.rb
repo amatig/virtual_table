@@ -1,5 +1,5 @@
 class Hand < VObject
-    
+  
   def init_graph
     # init font
     TTF.setup

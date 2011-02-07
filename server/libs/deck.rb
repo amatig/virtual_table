@@ -19,6 +19,12 @@ class Deck < VObject
     Env.instance.to_front(self)
   end
   
+end
+
+# Menu actions
+
+class Deck
+  
   def action_1card(x = nil, y = nil)
     unless @cards_code.empty?
       c = Card.new(@name, @cards_code.delete(@cards_code.first))
@@ -80,7 +86,7 @@ class Deck < VObject
     return @cards_code
   end
   
-  def action_in_deck(data)
+  def action_to_deck(data)
     data.each do |c|
       Env.instance.del_object_by_id(c)
     end
@@ -89,6 +95,8 @@ class Deck < VObject
   end
   
 end
+
+# Deck per gioco poker
 
 class DeckPoker < Deck
   

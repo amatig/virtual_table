@@ -27,6 +27,23 @@ class Deck < VObject
     return @cards_code.size
   end
   
+  # Ridefinizione del metodo per il deck.
+  def draw(screen)
+    unless @cards_code.empty?
+      @image.blit(screen, @rect)
+    else
+      @image_empty.blit(screen, @rect)
+    end
+    @label.blit(screen, [@rect.x, @rect.y - 22])
+    @image_lock.blit(screen, @rect) if @lock
+  end
+  
+end
+
+# Menu actions
+
+class Deck
+  
   def menu_actions
     return [["1 carta", "action_1card"],
             ["1 carta a testa", "action_1card4all"], 
@@ -109,7 +126,7 @@ class Deck < VObject
     end
   end
   
-  def action_in_deck(data = nil)
+  def action_to_deck(data = nil)
     if data
       data.each do |c|
         Env.instance.del_object_by_id(c)
@@ -119,18 +136,9 @@ class Deck < VObject
     end
   end
   
-  # Ridefinizione del metodo per il deck.
-  def draw(screen)
-    unless @cards_code.empty?
-      @image.blit(screen, @rect)
-    else
-      @image_empty.blit(screen, @rect)
-    end
-    @label.blit(screen, [@rect.x, @rect.y - 22])
-    @image_lock.blit(screen, @rect) if @lock
-  end
-  
 end
+
+# Necessario per riconoscere il tipo in UnMarhall
 
 class DeckPoker < Deck  
 end

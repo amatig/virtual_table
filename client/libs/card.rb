@@ -38,22 +38,42 @@ class Card < VObject
     Env.instance.to_front(self)
   end
   
-  def menu_actions
-    return [["Gira", "action_turn"],
-            ["Copri", "action_turnoff"],
-            ["Raccogli", "action_take"],
-            ["Metti in mazzo", "action_in_deck"],
-            ["Mostra punti", "action_show"]]
+  # Ridefinizione del metodo per il card.
+  def draw(screen)
+    hand = Env.instance.hand
+    if (@turn == false and not hand.rect.collide_rect?(@rect))
+      @image_back.blit(screen, @rect)
+    else
+      @image.blit(screen, @rect)
+    end
+    if @lock
+      @image_lock.blit(screen, @rect)
+      label = @font_lock.render_utf8(@lock, true, [255, 255, 255])
+      label.blit(screen, [@rect.x, @rect.y - 17])
+    end
   end
   
-  def action_turnon(data = nil)
+end
+
+# Menu actions
+
+class Card
+  
+  def menu_actions
+    return [["Gira", "action_turn"],
+            ["Raccogli", "action_take"],
+            ["Metti nel mazzo", "action_to_deck"],
+            ["Mostra punti", "action_points"]]
+  end
+  
+  def action_uncover(data = nil)
     if data
       set_value(data)
       @turn = true
     end
   end
   
-  def action_turnoff
+  def action_cover
     @turn = false
   end
   
@@ -68,25 +88,11 @@ class Card < VObject
     set_pos(*data) if data
   end
   
-  def action_in_deck(data = nil)
+  # Metodo fake richiamato poi sul deck.
+  def action_to_deck(data = nil)
   end
   
-  def action_show(data = nil)
-  end
-  
-  # Ridefinizione del metodo per il card.
-  def draw(screen)
-    hand = Env.instance.hand
-    if (@turn == false and not hand.rect.collide_rect?(@rect))
-      @image_back.blit(screen, @rect)
-    else
-      @image.blit(screen, @rect)
-    end
-    if @lock
-      @image_lock.blit(screen, @rect)
-      label = @font_lock.render_utf8(@lock, true, [255, 255, 255])
-      label.blit(screen, [@rect.x, @rect.y - 17])
-    end
+  def action_points(data = nil)
   end
   
 end

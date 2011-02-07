@@ -184,25 +184,25 @@ class Connection < EventMachine::Connection
             end
             cards.push(o)
             cards.each do |c|
-              c.send(:action_turnoff) # azione su un oggetto
+              c.send(:action_cover) # azione su un oggetto
               resend_all(Msg.dump(:type => "Action", 
                                   :oid => c.oid, 
-                                  :args => :action_turnoff))
+                                  :args => :action_cover))
               c.send(m.args, pos) # azione su un oggetto
               resend_all(Msg.dump(:type => "Action", 
                                   :oid => c.oid, 
                                   :args => [m.args, pos]))
             end
-          elsif m.args == :action_show
+          elsif m.args == :action_points
             cards = env.objects.select do |c| 
               c != o and c.kind_of?(Card) and c.fixed_collide?(o)
             end
             cards.push(o)
             cards.each do |c|
-              ret = c.send(:action_turnon) # azione su un oggetto
+              ret = c.send(:action_uncover) # azione su un oggetto
               resend_all(Msg.dump(:type => "Action", 
                                   :oid => c.oid, 
-                                  :args => [:action_turnon, ret]))
+                                  :args => [:action_uncover, ret]))
             end
             cards = env.order_points(cards) # hash di carte riordinate
             y = 0
@@ -222,7 +222,7 @@ class Connection < EventMachine::Connection
               end
               y += 1
             end
-          elsif m.args == :action_in_deck
+          elsif m.args == :action_to_deck
             cards = [o.oid]
             env.objects.each do |c| 
               if (c != o and c.kind_of?(Card) and c.fixed_collide?(o))
