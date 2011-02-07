@@ -12,6 +12,10 @@ class Card < VObject
   end
   
   def init_graph
+    # init font
+    TTF.setup
+    @font_lock = TTF.new("./fonts/FreeSans.ttf", 12)
+    # graph
     if (@seed == nil and @num == nil)
       @image = Surface.load("./images/#{@deck}/back0.png")
     else
@@ -78,7 +82,11 @@ class Card < VObject
     else
       @image.blit(screen, @rect)
     end
-    @image_lock.blit(screen, @rect) if @lock
+    if @lock
+      @image_lock.blit(screen, @rect)
+      label = @font_lock.render_utf8(@lock, true, [255, 255, 255])
+      label.blit(screen, [@rect.x, @rect.y - 17])
+    end
   end
   
 end
