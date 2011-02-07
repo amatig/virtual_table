@@ -151,9 +151,7 @@ class Game < EventMachine::Connection
         if m.data.kind_of?(Table)
           env.add_table(m.data.init_graph)
         elsif m.data.kind_of?(Array)
-          m.data.each do |o|
-            env.add_object(o.init_graph)
-          end
+          m.data.each { |o| env.add_object(o.init_graph) }
           env.add_hand(env.get_object(@nick))
         end
         @accepted = true # accettato dal server, si iniziare a disegnare
