@@ -159,13 +159,11 @@ class Connection < EventMachine::Connection
       when "GetValue"
         hand = env.get_hand(self.object_id)
         env.objects.each do |c| 
-          if c.kind_of?(Card)
-            if hand.fixed_collide?(c)
-              ret = SecretDeck.instance.get_value(c)
-              send_me(Msg.dump(:type => "Action", 
-                               :oid => c.oid, 
-                               :args => [:set_value, ret]))
-            end
+          if (c.kind_of?(Card) and hand.fixed_collide?(c))
+            ret = SecretDeck.instance.get_value(c)
+            send_me(Msg.dump(:type => "Action", 
+                             :oid => c.oid, 
+                             :args => [:set_value, ret]))
           end
         end
       when "Action"
@@ -180,7 +178,7 @@ class Connection < EventMachine::Connection
                                 :args => [m.args, ret]))
           elsif m.args == :action_take
             hand = env.get_hand(self.object_id)
-            pos = [hand.x - 80, hand.y + 32]
+            pos = [hand.x - 85, hand.y + 42]
             cards = env.objects.select do |c| 
               c != o and c.kind_of?(Card) and c.fixed_collide?(o)
             end
@@ -206,7 +204,7 @@ class Connection < EventMachine::Connection
                                   :oid => c.oid, 
                                   :args => [:action_turnon, ret]))
             end
-            cards = env.order_points(cards)
+            cards = env.order_points(cards) # hash di carte riordinate
             y = 0
             cards.each do |k, v|
               x = 0
