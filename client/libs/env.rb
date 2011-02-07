@@ -42,6 +42,10 @@ class Env
     return del_object(get_object(oid))
   end
   
+  def get_object(oid)
+    return @hash_objects[oid]
+  end
+  
   def del_all_card
     @hash_objects.keys.each do |oid|
       o = get_object(oid)
@@ -51,10 +55,6 @@ class Env
   
   def to_front(o)
     @objects.push(@objects.delete(o))
-  end
-  
-  def get_object(oid)
-    return @hash_objects[oid]
   end
   
 end

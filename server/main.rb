@@ -99,13 +99,7 @@ class Connection < EventMachine::Connection
                                        :args => [m.args[0], @nick]))
           else
             # se hand si tiene temporaneam. i ref delle carte per spostarle
-            env.objects.each do |c| 
-              if (c.kind_of?(Card) and o.fixed_collide?(c))
-                c.lock(@nick)
-                # metto gli oggetti tanto solo in pick esistono
-                o.cards.push(c)
-              end
-            end
+            o.lock_over_cards(@nick)
           end
         end
       when "Move"
@@ -140,8 +134,7 @@ class Connection < EventMachine::Connection
           cards.push(o)
         elsif o.kind_of?(Hand)
           # rimuove le carte in links per lo spostamento
-          o.cards.each { |c| c.unlock }
-          o.cards = []
+          o.unlock_over_cards
           hands.push(o)
           cards = env.objects.select { |c| c.kind_of?(Card) }
         end

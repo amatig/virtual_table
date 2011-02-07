@@ -13,6 +13,22 @@ class Hand < VObject
   def move
   end
   
+  def lock_over_cards(nick)
+    unlock_over_cards
+    Env.instance.objects.each do |c| 
+      if (c.kind_of?(Card) and fixed_collide?(c))
+        c.lock(nick)
+        # metto gli oggetti tanto solo in pick esistono
+        @cards.push(c)
+      end
+    end
+  end
+  
+  def unlock_over_cards
+    @cards.each { |c| c.unlock }
+    @cards = []
+  end
+  
   def fixed_collide?(card)
     rhd = Rubygame::Rect.new(@x, @y, 315, 175) # fissi
     rc = Rubygame::Rect.new(card.x, card.y, 70, 109) # fissi

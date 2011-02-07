@@ -3,7 +3,7 @@ class Hand < VObject
   def init_graph
     # init font
     TTF.setup
-    font = TTF.new("./fonts/FreeSans.ttf", 20)
+    font = TTF.new("./fonts/FreeSans.ttf", 15)
     # label
     @label = font.render_utf8(@lock, true, [255, 255, 255])
     @image = Surface.load("./images/hand1.png")
