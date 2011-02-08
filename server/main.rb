@@ -267,9 +267,13 @@ class Connection < EventMachine::Connection
 end
 
 
-EventMachine::run do
-  s = Server.new
-  s.start
-  trap("INT") { EventMachine::stop_event_loop }
-  puts "Server is running..."
+if __FILE__ == $0
+  
+  EventMachine::run do
+    s = Server.new
+    s.start
+    trap("INT") { EventMachine::stop_event_loop }
+    puts "Server is running..."
+  end
+  
 end
