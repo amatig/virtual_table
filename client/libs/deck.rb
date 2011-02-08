@@ -20,7 +20,7 @@ class Deck < VObject
   def init_graph
     # init font
     TTF.setup
-    @font = TTF.new("./fonts/FreeSans.ttf", 17)
+    @font = TTF.new("./fonts/FreeSans.ttf", 12)
     # graph
     update_label
     @image = Surface.load("./images/#{@name}/deck1.png")
@@ -32,7 +32,7 @@ class Deck < VObject
   end
   
   def update_label
-    @label = @font.render_utf8("#{size}/#{@max_size}", true, [255, 255, 255])
+    @label = @font.render_utf8("#{'%02d' % size}/#{@max_size}", true, [255, 255, 255])
   end
   
   def to_front
@@ -50,8 +50,12 @@ class Deck < VObject
     else
       @image_empty.blit(screen, @rect)
     end
-    @label.blit(screen, [@rect.x, @rect.y - 22])
-    @image_lock.blit(screen, @rect) if @lock
+    @label.blit(screen, [@rect.x + 43, @rect.y + 113])
+    if @lock
+      @image_lock.blit(screen, @rect)
+      label2 = @font.render_utf8(@lock, true, [255, 255, 255])
+      label2.blit(screen, [@rect.x + 1, @rect.y - 17])
+    end
   end
   
 end
