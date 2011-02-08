@@ -1,0 +1,15 @@
+Makefile
+configure
+config.*
+depcomp
+doc
+missing
+stamp-h1
+install-sh
+*.m4
+*.in
+*.cache
+*.o
+*.so
+.*
+*~
