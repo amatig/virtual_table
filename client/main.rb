@@ -233,7 +233,7 @@ if __FILE__ == $0
     emg = EventMachine::connect($IP != "" ? $IP : "0.0.0.0", 3333, Game)
     emg.set_nick($NICK)
     clock = Rubygame::Clock.new
-    clock.target_framerate = 30    
+    clock.target_framerate = 27
     game_loop = proc do 
       emg.loop
       game_exit.call unless emg.running
