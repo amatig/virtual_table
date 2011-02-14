@@ -38,7 +38,7 @@ class Game < EventMachine::Connection
   
   # Costruttore della classe.
   def initialize
-    @screen = Screen.new([1024, 768], 
+    @screen = Screen.new([1024, 720], 
                          0, 
                          [Rubygame::HWSURFACE, Rubygame::DOUBLEBUF])
     @screen.title = "Virtual Table"
@@ -85,7 +85,6 @@ class Game < EventMachine::Connection
         end
       when Rubygame::Events::KeyPressed
         if (@picked and @picked.kind_of?(Card) and ev.key == :left_ctrl)
-          env.flag = true # arrivato evento si disegna
           send_msg(Msg.dump(:type => "Action", 
                             :oid => @picked.oid, 
                             :args => :action_turn))
