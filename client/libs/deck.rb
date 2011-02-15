@@ -18,6 +18,7 @@ class Deck < VObject
   attr_reader :cards_code, :cards_value
   
   def init_graph
+    @snd_shuffle = Sound.load("./wavs/shuffle.wav")
     # init font
     TTF.setup
     @font = TTF.new("./fonts/FreeSans.ttf", 12)
@@ -116,7 +117,10 @@ class Deck
   end
   
   def action_shuffle(data = nil)
-    @cards_code = data if data
+    if data
+      @snd_shuffle.play
+      @cards_code = data
+    end
   end
   
   def action_create40(data = nil)
