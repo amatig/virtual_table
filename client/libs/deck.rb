@@ -18,6 +18,7 @@ class Deck < VObject
   attr_reader :cards_code, :cards_value
   
   def init_graph
+    @snd_place = Sound.load("./wavs/place_card.wav")
     @snd_shuffle = Sound.load("./wavs/shuffle.wav")
     # init font
     TTF.setup
@@ -79,6 +80,7 @@ class Deck
   
   def action_1card(x = nil, y = nil)
     unless @cards_code.empty?
+      @snd_place.play unless @snd_place.playing?
       c = Card.new(@name, @cards_code.delete(@cards_code.first))
       update_label
       if (x and y)
@@ -125,6 +127,7 @@ class Deck
   
   def action_create40(data = nil)
     if data
+      @snd_shuffle.play
       Env.instance.del_all_card
       @cards_code = data
       @max_size = size
@@ -134,6 +137,7 @@ class Deck
   
   def action_create52(data = nil)
     if data
+      @snd_shuffle.play
       Env.instance.del_all_card
       @cards_code = data
       @max_size = size
@@ -143,6 +147,7 @@ class Deck
   
   def action_create54(data = nil)
     if data
+      @snd_shuffle.play
       Env.instance.del_all_card
       @cards_code = data
       @max_size = size
@@ -152,6 +157,7 @@ class Deck
   
   def action_to_deck(data = nil)
     if data
+      @snd_place.play
       data.each do |c|
         Env.instance.del_object_by_id(c)
       end

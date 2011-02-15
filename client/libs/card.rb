@@ -28,7 +28,7 @@ class Card < VObject
   end
   
   def init_graph
-    @snd_place = Sound.load("./wavs/place_card.wav")
+    @@snd_place = Sound.load("./wavs/place_card.wav")
     # init font
     TTF.setup
     @font_lock = TTF.new("./fonts/FreeSans.ttf", 12)
@@ -96,14 +96,17 @@ class Card
   
   def action_turn(data = nil)
     if data
-      @snd_place.play
+      @@snd_place.play unless @@snd_place.playing?
       set_value(data)
       @turn = (not @turn)
     end
   end
   
   def action_take(data = nil)
-    set_pos(*data) if data
+    if data
+      @@snd_place.play unless @@snd_place.playing?
+      set_pos(*data)
+    end
   end
   
   # Metodo fake richiamato poi sul deck.
@@ -111,6 +114,7 @@ class Card
   end
   
   def action_points(data = nil)
+    @@snd_place.play unless @@snd_place.playing?
   end
   
 end
