@@ -1,5 +1,7 @@
 #!/usr/bin/ruby
 
+$LOAD_PATH.unshift File.dirname(__FILE__)
+
 require "rubygems"
 require "eventmachine"
 require "singleton"
