@@ -16,18 +16,16 @@ You should have received a copy of the GNU General Public License along with thi
 
 * EventMachine - Fast, simple event-processing library for Ruby programs
 
- Tutte le dipendenze sono installabili con bundle install. Per Rubygame installare anche le libsdl, seguire la guida di installazione.
+Tutte le dipendenze sono installabili con bundle install. Per Rubygame installare anche le libsdl, seguire la guida di installazione.
 
 == Getting started
 
-Avvio del server...
+[SERVER]
 
- cd server
+cd server
+ruby main.rb
 
- ruby main.rb
+[CLIENT]
 
-Avvio di una istanza del client...
-
- cd client
-
- ruby main.rb
+cd client
+ruby main.rb
